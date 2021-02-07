@@ -1,0 +1,19 @@
+{
+  "name": "uwu-robot",
+  "version": "1.0.0",
+  "description": "A robot that makes your day better (BTHS Competitive Programming Team)",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Becca",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "github-api": "^3.4.0",
+    "googleapis": "^67.0.0",
+    "nano": "^9.0.3",
+    "request": "^2.88.2"
+  }
+}
