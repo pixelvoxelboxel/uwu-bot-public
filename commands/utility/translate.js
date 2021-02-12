@@ -44,7 +44,7 @@ module.exports = {
     usage: '[message] | [encode][decode]',
     execute(message, args) {
         let morse_json;
-        const argument = args.toString().trim().replace(/,/g, ' ').split(' | 
+        const argument = args.toString().trim().replace(/,/g, ' ').split(' | ');
         if(argument[1] == 'encode') {morse_json = morse_files.morse_code_encode}
         else {morse_json = morse_files.morse_code_decode}
 
