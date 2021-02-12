@@ -4,7 +4,6 @@ const encode = (sentence, json) => {
     const sent = sentence.split(' ');
     const decoded = new Array;
     for(idx in sent) {
-        console.log()
         let word = sent[idx];
         let word_arr = new Array;
         for(letter in word) {
@@ -45,8 +44,7 @@ module.exports = {
     usage: '[message] | [encode][decode]',
     execute(message, args) {
         let morse_json;
-        const argument = args.toString().trim().replace(/,/g, ' ').split(' | ');
-        console.log(message);
+        const argument = args.toString().trim().replace(/,/g, ' ').split(' | 
         if(argument[1] == 'encode') {morse_json = morse_files.morse_code_encode}
         else {morse_json = morse_files.morse_code_decode}
 
