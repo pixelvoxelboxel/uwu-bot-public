@@ -5,11 +5,10 @@
 */
 const Discord = require("discord.js");
 const useful_functions = require('../useful_functions.js');
-
+let data_tracker = {"prev": [10]};
 /* parse end point to get a better json from it
 */
 const parse_endpoint = async (url, start, rows) => {
-    data_tracker.current = start-1;
     let counted_rows = 1;
     let jobs_data = {};
     const data = await useful_functions.getData(url);
@@ -47,24 +46,28 @@ const make_text = async (data_json) => {
     return embed;
 }
 
+/* if prev, pop current idx
+* if next, push current idx */
 const prev_or_next = async(type, idx, sent, message) => {
     switch(type) {
+        case "back":
+            if(data_tracker.prev.length != 1) data_tracker.prev.pop();
+            break;
         case "next":
-            data_tracker.prev = data_tracker.current;
+            data_tracker.prev.push(idx);
             break;
     }
     const new_json = await parse_endpoint("https://spreadsheets.google.com/feeds/cells/1l97Q-9_HMcvcxslNsG8XfWKkC4ehBYecvE7x_cqTRPs/1/public/full?alt=json", idx+1, 3);
     const new_embed = await make_text(new_json);
     sent.reactions.removeAll();
     sent.edit(new_embed);
-    manage_reactions(11, new_json[1], new_json[2], sent, message);
+    manage_reactions(10, new_json[1], new_json[2], sent, message);
 }
 
-let data_tracker = {"prev": 11, "current": 11};
+
 const manage_reactions = (start, current, end, embed, message) => {
-    console.log(data_tracker)
-    //if (start != current) embed.react('⏮️') // prev;
-    if (end != current) embed.react('⏭️') // next;
+    if (data_tracker.prev.length != 1) embed.react('⏮️'); // prev
+    if (end != current) embed.react('⏭️'); // next
     embed.awaitReactions(
         (reaction, user) => user.id == message.author.id && (['⏭️', '⏮️'].includes(reaction.emoji.name)), 
         { max: 1, time: 60000, errors: ['time'] })
@@ -74,21 +77,15 @@ const manage_reactions = (start, current, end, embed, message) => {
                 prev_or_next("next", current, embed, message);
                 
             } else {
-                prev_or_next("back", data_tracker.prev, embed, message);
+                let last_page = data_tracker.prev[data_tracker["prev"].length - 2];
+                prev_or_next("back", last_page, embed, message);
             }
             
         })
         .catch(collected => {
-            
-            message.reply('Time out, be faster next time!');
+            message.reply('Timed out. Be faster next time!');
         });;
 }
-const test = async() => {
-   const jobs_json = await parse_endpoint("https://spreadsheets.google.com/feeds/cells/1l97Q-9_HMcvcxslNsG8XfWKkC4ehBYecvE7x_cqTRPs/1/public/full?alt=json", 11, 3);
-    
-  console.log(jobs_json)
-}
-//test();
 
 module.exports = {
     name: "jobs",
@@ -98,8 +95,7 @@ module.exports = {
  
         const embed = await make_text(jobs_json);
         message.channel.send(embed).then(sent => {
-            data_tracker.current = 11;
-            manage_reactions(11, 11, jobs_json[2], sent, message);
+            manage_reactions(jobs_json[1], jobs_json[1], jobs_json[2], sent, message);
         });
     } 
   }
