@@ -15,7 +15,7 @@ const getRandom = (arr) => {
   return arr[random_idx];
 }
 
-const makeEmbed = (url, name, description) => {
+const makeEmbed = (name, url, description) => {
   let embed = new Discord.MessageEmbed()
   .setTitle(name)
   .setDescription(description)
