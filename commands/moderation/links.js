@@ -66,7 +66,7 @@ const guildLinks = async (type, message, guildId, args) => {
 module.exports = {
     name: 'links',
     async execute(message, args) {
-        if(args.includes("close") && message.author.id == 248273876902084608) {
+        if(args.includes("close") && message.author.id == ADMIN_ID) {
             database.db_client.close();
             message.reply("Connection closed");
         }
